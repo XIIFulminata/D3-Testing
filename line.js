@@ -1,3 +1,5 @@
+//data from http://www.nasdaq.com/symbol/fb/historical
+
 var svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -20,18 +22,23 @@ var line = d3.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
 
-d3.csv("data.csv", function(d) {
+d3.csv("fb_5year.csv", function(d) {
   d.date = parseTime(d.date);
   d.close = +d.close;
+  d.volume = +d.volume;
+  d.high = +d.high;    
+  d.low = +d.low;    
   return d;
 }, function(error, data) {
   if (error) throw error;
 
   x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain(d3.extent(data, function(d) { return d.close; }));
+  y.domain(d3.extent(data, function(d) { return d.low; }));
+   // y.domain(d3.extent(data, function(d) { return d.high; }));
 
   g.append("g")
       .attr("transform", "translate(0," + height + ")")
+      //translates x axis labels to bottom
       .call(d3.axisBottom(x))
     .select(".domain")
       .remove();
@@ -40,11 +47,11 @@ d3.csv("data.csv", function(d) {
       .call(d3.axisLeft(y))
     .append("text")
       .attr("fill", "#000")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
+      .attr("transform", "rotate(-90)") //turns axis label vertical
+      .attr("y", 6) //label spacing from axis line
+      .attr("dy", "0.71em") //label spacing from axis line
       .attr("text-anchor", "end")
-      .text("Price ($)");
+      .text("Stock Price ($)");
 
   g.append("path")
       .datum(data)

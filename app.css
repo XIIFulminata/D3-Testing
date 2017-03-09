@@ -6,4 +6,10 @@
 
 svg {
     /*margin: 150px;*/
+    display: block;
+    margin: auto;
+}
+
+#svgDiv {
+    
 }
